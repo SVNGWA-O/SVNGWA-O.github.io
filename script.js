@@ -42,12 +42,13 @@ document.querySelectorAll(".tbn").forEach((btn) => {
     document
       .querySelectorAll(".tbn")
       .forEach((b) => b.classList.toggle("active", b === btn));
-    localStorage.setItem("portfolio-theme", t);
+    localStorage.setItem("portfolio-theme-v2", t);
   });
 });
 
-// Restore saved theme on load
-const savedTheme = localStorage.getItem("portfolio-theme");
+// Restore saved theme on load (v2 key so the new light default applies to
+// visitors who saved a theme on the old site)
+const savedTheme = localStorage.getItem("portfolio-theme-v2");
 if (savedTheme) {
   html.setAttribute("data-theme", savedTheme);
   document.querySelectorAll(".tbn").forEach((b) => {
