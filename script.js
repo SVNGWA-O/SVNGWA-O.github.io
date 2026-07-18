@@ -42,13 +42,20 @@ document.querySelectorAll(".tbn").forEach((btn) => {
     document
       .querySelectorAll(".tbn")
       .forEach((b) => b.classList.toggle("active", b === btn));
-    localStorage.setItem("portfolio-theme-v2", t);
+    try {
+      localStorage.setItem("portfolio-theme-v2", t);
+    } catch (_) {
+      // storage can be unavailable in private browsing; the theme still applies
+    }
   });
 });
 
 // Restore saved theme on load (v2 key so the new light default applies to
 // visitors who saved a theme on the old site)
-const savedTheme = localStorage.getItem("portfolio-theme-v2");
+let savedTheme = null;
+try {
+  savedTheme = localStorage.getItem("portfolio-theme-v2");
+} catch (_) {}
 if (savedTheme) {
   html.setAttribute("data-theme", savedTheme);
   document.querySelectorAll(".tbn").forEach((b) => {
@@ -57,15 +64,20 @@ if (savedTheme) {
 }
 
 // ── SCROLL REVEAL ──
-const observer = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((e) => {
-      if (e.isIntersecting) {
-        e.target.classList.add("on");
-      }
-    });
-  },
-  { threshold: 0.1 },
-);
-
-document.querySelectorAll(".rv").forEach((el) => observer.observe(el));
+// If IntersectionObserver is unavailable, reveal everything immediately so
+// no browser is ever left with hidden content.
+if ("IntersectionObserver" in window) {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add("on");
+        }
+      });
+    },
+    { threshold: 0.1 },
+  );
+  document.querySelectorAll(".rv").forEach((el) => observer.observe(el));
+} else {
+  document.querySelectorAll(".rv").forEach((el) => el.classList.add("on"));
+}
