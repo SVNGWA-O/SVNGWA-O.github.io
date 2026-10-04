@@ -32,34 +32,27 @@ document.querySelectorAll("a, button").forEach((el) => {
   });
 });
 
-// ── THEME SWITCHER ──
+// ── THEME TOGGLE (light / dark, sun / moon) ──
 const html = document.documentElement;
 
-document.querySelectorAll(".tbn").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    const t = btn.dataset.t;
-    html.setAttribute("data-theme", t);
-    document
-      .querySelectorAll(".tbn")
-      .forEach((b) => b.classList.toggle("active", b === btn));
+// Restore saved theme (only light/dark now; anything else falls back to light)
+let savedTheme = null;
+try {
+  savedTheme = localStorage.getItem("portfolio-theme-v3");
+} catch (_) {}
+html.setAttribute("data-theme", savedTheme === "dark" ? "dark" : "light");
+
+const themeToggle = document.getElementById("theme-toggle");
+if (themeToggle) {
+  themeToggle.addEventListener("click", () => {
+    const next =
+      html.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    html.setAttribute("data-theme", next);
     try {
-      localStorage.setItem("portfolio-theme-v2", t);
+      localStorage.setItem("portfolio-theme-v3", next);
     } catch (_) {
       // storage can be unavailable in private browsing; the theme still applies
     }
-  });
-});
-
-// Restore saved theme on load (v2 key so the new light default applies to
-// visitors who saved a theme on the old site)
-let savedTheme = null;
-try {
-  savedTheme = localStorage.getItem("portfolio-theme-v2");
-} catch (_) {}
-if (savedTheme) {
-  html.setAttribute("data-theme", savedTheme);
-  document.querySelectorAll(".tbn").forEach((b) => {
-    b.classList.toggle("active", b.dataset.t === savedTheme);
   });
 }
 
