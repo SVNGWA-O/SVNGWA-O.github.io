@@ -35,12 +35,13 @@ document.querySelectorAll("a, button").forEach((el) => {
 // ── THEME TOGGLE (light / dark, sun / moon) ──
 const html = document.documentElement;
 
-// Restore saved theme (only light/dark now; anything else falls back to light)
+// Restore saved theme. Dark is the default; only an explicit "light" choice
+// switches away from it.
 let savedTheme = null;
 try {
   savedTheme = localStorage.getItem("portfolio-theme-v3");
 } catch (_) {}
-html.setAttribute("data-theme", savedTheme === "dark" ? "dark" : "light");
+html.setAttribute("data-theme", savedTheme === "light" ? "light" : "dark");
 
 const themeToggle = document.getElementById("theme-toggle");
 if (themeToggle) {
